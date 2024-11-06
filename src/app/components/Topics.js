@@ -1,18 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Search, FileText, Video, User, ArrowRight } from "lucide-react"; // Added ArrowRight icon
 import topicsData from "/public/topics.json"; // Adjust path if necessary
 import OneTopic from "./OneTopic";
 
-const Topics = () => {
-  const [topics, setTopics] = useState([]);
+const Topics = ({ selectedTopic, handleTopicClick, topics }) => {
+  const [initTopics, setInitTopics] = useState(topics);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState(null); // State to manage selected topic
-
-  // Load the data from the JSON on component mount
-  useEffect(() => {
-    setTopics(topicsData);
-  }, []);
 
   // Handle the search functionality
   const handleSearch = (e) => {
@@ -20,14 +14,9 @@ const Topics = () => {
   };
 
   // Filter the list of topics based on the search term
-  const filteredTopics = topics.filter((topic) =>
+  const filteredTopics = initTopics.filter((topic) =>
     topic.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  // Function to handle topic click
-  const handleTopicClick = (topic) => {
-    setSelectedTopic(topic); // Set selected topic by name
-  };
 
   return (
     <div className="flex h-screen overflow-hidden">

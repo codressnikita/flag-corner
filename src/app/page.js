@@ -1,46 +1,44 @@
 "use client";
-import { useState } from "react";
-import Countries from "./components/Countries";
+import { useState, useEffect } from "react";
 import Topics from "./components/Topics";
 import ActionBar from "./components/ActionBar";
 import Landing from "./components/Landing";
+import topicsData from "/public/topics.json";
 
 export default function Page() {
-  const [showCountries, setShowCountries] = useState(false); // Initialize with true
-  const [showTopics, setShowTopics] = useState(false);
+  const [topics, setTopics] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState(null);
 
-  const handleTopicsClick = () => {
-    setShowTopics(true);
-    setShowCountries(false);
-  };
-  const handleCountriesClick = () => {
-    setShowCountries(true);
-    setShowTopics(false);
+  useEffect(() => {
+    setTopics(topicsData);
+  }, []);
+
+  const handleTopicClick = (topic) => {
+    setSelectedTopic(topic);
   };
 
   const toHome = () => {
-    setShowCountries(false);
-    setShowTopics(false);
+    setSelectedTopic(null);
   };
 
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-grow overflow-hidden pb-14">
-        {!showTopics && !showCountries && (
-          <Landing
-            handleTopicsClick={handleTopicsClick}
-            handleCountriesClick={handleCountriesClick}
+        {!selectedTopic && (
+          <Landing handleTopicClick={handleTopicClick} topics={topics} />
+        )}
+        {selectedTopic && (
+          <Topics
+            topics={topics}
+            selectedTopic={selectedTopic}
+            handleTopicClick={handleTopicClick}
           />
         )}
-        {showCountries && <Countries />}
-        {showTopics && <Topics />}
       </div>
       <ActionBar
-        showCountries={showCountries}
-        showTopics={showTopics}
+        selectedTopic={selectedTopic}
         toHome={toHome}
-        handleTopicsClick={handleTopicsClick}
-        handleCountriesClick={handleCountriesClick}
+        handleTopicClick={handleTopicClick}
         className="fixed bottom-0 left-0 right-0 h-12" // Fixed positioning
       />
     </div>
